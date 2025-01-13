@@ -75,35 +75,69 @@ BEGIN
 
 -- Consultas --
 
--- Unión Kelvia –
+-- Unión Kelvia --
 
+SELECT * FROM huesped
+WHERE numero_identificacion LIKE 'DNI%'
+UNION
+SELECT * FROM huesped
+WHERE numero_identificacion LIKE 'PAS%';
 
 -- Intersección Kelvia --
 
+SELECT * FROM huesped
+WHERE numero_identificacion LIKE 'DNI%'
+INTERSECT
+SELECT * FROM huesped
+WHERE telefono LIKE '+34%';
 
 -- Diferencia Kelvia --
 
+SELECT * FROM huesped
+WHERE numero_identificacion NOT LIKE 'DNI%'
+EXCEPT
+SELECT * FROM huesped
+WHERE numero_identificacion LIKE 'DNI%';
 
---  Agregación Kelvia --
+-- Agregación Kelvia --
+
+SELECT 
+    LEFT(telefono, 3) AS pais, 
+    COUNT(*) AS total_huespedes
+FROM huesped
+GROUP BY pais
+ORDER BY total_huespedes DESC;
+
+-- Reunion natural -- 
+
+SELECT h.huesped_id, h.codigo_unico, h.nombre_completo, h.numero_identificacion, h.telefono, h.correo_electronico, r.reserva_huesped_id, r.reserva_id
+FROM huesped h
+NATURAL JOIN reserva_huesped r;
+
+-- Reunion natural por la izquierda --
+
+SELECT h.huesped_id, h.codigo_unico, h.nombre_completo, h.numero_identificacion, h.telefono, h.correo_electronico, r.reserva_huesped_id, r.reserva_id
+FROM huesped h
+LEFT JOIN reserva_huesped r
+ON h.huesped_id = r.huesped_id;
 
 
--- Reunion natural Kelvia --
+-- Reunion natural por la derecha --
 
+SELECT h.huesped_id, h.codigo_unico, h.nombre_completo, h.numero_identificacion, h.telefono, h.correo_electronico, r.reserva_huesped_id, r.reserva_id
+FROM huesped h
+RIGHT JOIN reserva_huesped r
+ON h.huesped_id = r.huesped_id;
 
--- Reunion natural por la izquierda Kelvia --
+-- Producto cartesiano --
 
-
--- Reunion natural por la derecha Kelvia --
-
-
--- Producto cartesiano Kelvia --
-
-
+SELECT h.huesped_id, h.codigo_unico, h.nombre_completo, h.numero_identificacion, h.telefono, h.correo_electronico, r.reserva_huesped_id, r.reserva_id
+FROM huesped h
+CROSS JOIN reserva_huesped r;
 
 END //
 
 DELIMITER ;
-
 
 DELIMITER //
 
